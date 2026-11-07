@@ -9,21 +9,33 @@ spring:
       server:
         webflux:
           routes:
+            # ----------------------------------------------------
+            # Microservicio de Cursos y Alumnos (puerto 8001)
+            # ----------------------------------------------------
             - id: servicio-cursos-alumnos
               uri: lb://servicio-cursos-alumnos
               predicates:
-                - Path=/api/cursos/**
+                - Path=/cursos-service/**
               filters:
-                - StripPrefix=2
+                - StripPrefix=1
 
+            # ----------------------------------------------------
+            # Microservicio de Usuarios y Matrículas (puerto 8002)
+            # ----------------------------------------------------
             - id: servicio-usuarios-matriculas
               uri: lb://servicio-usuarios-matriculas
               predicates:
-                - Path=/api/usuarios/**
+                - Path=/usuarios-service/**
               filters:
-                - StripPrefix=2
+                - StripPrefix=1
 
+# Configuración del cliente Eureka para localización dinámica
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka
+
+  instance:
+    prefer-ip-address: true
+    hostname: localhost
+    ip-address: 127.0.0.1
